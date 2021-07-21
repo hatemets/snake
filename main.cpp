@@ -8,12 +8,16 @@ Direction keyToDirection(sf::Keyboard::Key key)
 	{
 		case sf::Keyboard::Key::W:
 			direction.m_up = true;
+			break;
 		case sf::Keyboard::Key::A:
 			direction.m_left = true;
+			break;
 		case sf::Keyboard::Key::S:
 			direction.m_down = true;
+			break;
 		case sf::Keyboard::Key::D:
 			direction.m_right = true;
+			break;
 	}
 
 	return direction;

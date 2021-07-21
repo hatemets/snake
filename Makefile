@@ -1,10 +1,10 @@
 all: sfml sfml-build
 
-sfml: main.cpp Snake.cpp
-	g++ -c main.cpp Snake.cpp
+sfml: main.cpp Snake.cpp Piece.cpp
+	g++ -c main.cpp Snake.cpp Piece.cpp
 
-sfml-build: main.o Snake.o
-		g++ main.o Snake.o -o out -lsfml-graphics -lsfml-window -lsfml-system
+sfml-build: main.o Snake.o Piece.o
+		g++ main.o Snake.o Piece.o -o out -lsfml-graphics -lsfml-window -lsfml-system
 
 clean:
 	rm -rf *.o sfml
