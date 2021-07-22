@@ -2,10 +2,10 @@
 #include <math.h>
 #include <iostream>
 
-Piece::Piece(const sf::Vector2f position, const Direction direction)
+Piece::Piece(const sf::Vector2f position, const Direction direction, const float radius)
 	: m_direction(direction)
 {
-	m_shape = std::make_unique<sf::CircleShape>(10.f); // radius = 50.f
+	m_shape = std::make_unique<sf::CircleShape>(radius);
 	m_shape->setPosition(position);
 	m_shape->setFillColor(sf::Color::White);
 }
@@ -45,6 +45,20 @@ void Piece::move(const float distance)
 	m_shape->move(movement);
 }
 
+
+void Piece::move(const float distance, const Direction direction)
+{
+	sf::Vector2f movement;
+
+	if (direction.m_up) movement.y -= distance;
+	else if (direction.m_down) movement.y += distance;
+	else if (direction.m_left) movement.x -= distance;
+	else if (direction.m_right) movement.x += distance;
+
+	m_shape->move(movement);
+}
+
+
 bool Piece::hasHitTurningPoint(const sf::Vector2f turningPoint) const
 {
 	float errorMargin = 1.f;
@@ -67,7 +81,13 @@ bool Piece::hasHitTurningPoint(const sf::Vector2f turningPoint) const
 	}
 	else
 	{
+		std::cout << std::boolalpha;
 		std::cerr << "error (piece): no valid direction" << std::endl;
+		std::cout << "up: " << m_direction.m_up << std::endl;
+		std::cout << "down: " << m_direction.m_down << std::endl;
+		std::cout << "left: " << m_direction.m_left << std::endl;
+		std::cout << "right: " << m_direction.m_right << std::endl;
+		std::cout << "---" << std::endl;
 		return false;
 	}
 }

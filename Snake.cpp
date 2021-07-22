@@ -1,6 +1,7 @@
 #include "Snake.hpp"
 #include <iostream>
 #include <utility>
+#include <math.h>
 
 bool isComplanary(const Direction& d1, const Direction& d2)
 {
@@ -13,9 +14,10 @@ bool isComplanary(const Direction& d1, const Direction& d2)
 Snake::Snake()
 	:
 		m_size(15),
+		m_pieceRadius(10.f),
 		m_spawnPosition(200.f, 200.f),
 		m_direction(),
-		m_movementSpeed(0.5f)
+		m_movementSpeed(30.f),
 {
 	m_direction.m_right = true;
 
@@ -46,7 +48,7 @@ void Snake::addPiece(const Direction direction)
 		position = m_spawnPosition;
 	}
 
-	Piece piece{position, direction};
+	Piece piece{position, direction, m_pieceRadius};
 	m_snake.push_back(std::move(piece));
 }
 
@@ -58,20 +60,77 @@ void Snake::setDirection(const Direction& direction)
 	{
 		return;
 	}
-	else
+	if (m_turningPoints.size() >= 1)
 	{
-		m_direction = direction;
-		m_snake[0].setDirection(direction);
+		const Direction direction = m_snake[0].getDirection();
 
-		auto turningPoint = std::make_pair(m_snake[0].getCenter(), direction);
-		m_turningPoints.push_back(turningPoint);
+		auto centerPoint = m_snake[0].getCenter();
+		auto turningPoint = m_turningPoints[m_turningPoints.size() - 1].first;
 
-		std::cout << "size: " << m_turningPoints.size() << std::endl;
+		float centerValue = (direction.m_up || direction.m_down) ? centerPoint.y : centerPoint.x;
+		float turningPointValue = (direction.m_up || direction.m_down) ? turningPoint.y : turningPoint.x;
+
+		if (abs(centerValue - turningPointValue) <= 2 * m_pieceRadius)
+		{
+			std::cout << "too close\n";
+			return;
+		}
 	}
+
+	sf::Clock clock;
+
+	m_turningPoints.push_back(std::make_pair(m_snake[0].getCenter(), direction));
+	m_snake[0].setDirection(m_direction);
+
+	adjustLead(clock.restart());
+
+	m_direction = direction;
 }
 
 
-void Snake::move()
+bool Snake::isDead() const
+{
+	for (int i = 0; i < m_snake.size(); ++i)
+	{
+		if (i > 0 && m_snake[0].getShape()->getGlobalBounds().intersects(m_snake[i].getShape()->getGlobalBounds()))
+		{
+			return true;
+		}
+
+		// check for borders as well
+	}
+
+	return false;
+}
+
+
+void Snake::adjustLead(sf::Time dt)
+{
+	Direction direction = m_snake[0].getDirection();
+	Direction opposite;
+
+	if (direction.m_up)
+	{
+		opposite.m_down = true;
+	}
+	else if (direction.m_down)
+	{
+		opposite.m_down = true;
+	}
+	else if (direction.m_left)
+	{
+		opposite.m_right = true;
+	}
+	else if (direction.m_right)
+	{
+		opposite.m_left = true;
+	}
+
+	m_snake[0].move(dt.asSeconds() * m_movementSpeed, opposite);
+}
+
+
+void Snake::move(sf::Time dt)
 {
 	for (int i = 0; i < m_snake.size(); ++i)
 	{
@@ -88,7 +147,7 @@ void Snake::move()
 			}
 		}
 
-		m_snake[i].move(m_movementSpeed);
+		m_snake[i].move(dt.asSeconds() * m_movementSpeed);
 	}
 }
 
