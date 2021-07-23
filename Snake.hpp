@@ -25,10 +25,15 @@ class Snake : public sf::Drawable
 	public:
 		Snake();
 		void addPiece(const Direction direction);
+		void addPiece();
 		void move(sf::Time dt);
 		void setDirection(const	Direction& direction);
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const final;
-		bool isDead() const;
+		bool hasHitItself() const;
+
+	public:
+		const Piece& getLeadPiece() const { return m_snake[0]; }
+		float getPieceRadius() const { return m_pieceRadius; }
 };
 
 #endif

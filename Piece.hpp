@@ -18,16 +18,17 @@ class Piece : public sf::Drawable
 
 	public:
 		sf::CircleShape* getShape() const { return m_shape.get(); }
-		const sf::Vector2f getCenter() const;
 		void move(const float distance);
 		void move(const float distance, const Direction direction);
 		bool hasHitTurningPoint(sf::Vector2f turningPoint) const;
+		sf::Vector2f getCenter() const;
 
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const final;
 	
 	public:
 		void setDirection(const Direction direction) { m_direction = direction; }
 		const Direction getDirection() { return m_direction; }
+		bool isDead();
 };
 
 #endif

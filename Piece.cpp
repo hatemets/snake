@@ -1,6 +1,9 @@
 #include "Piece.hpp"
+#include "Helper.hpp"
+#include <SFML/Graphics/RectangleShape.hpp>
 #include <math.h>
 #include <iostream>
+#include <memory>
 
 Piece::Piece(const sf::Vector2f position, const Direction direction, const float radius)
 	: m_direction(direction)
@@ -16,22 +19,10 @@ Piece::Piece(Piece&& anotherPiece) noexcept
 {
 }
 
-
-const sf::Vector2f Piece::getCenter() const
+sf::Vector2f Piece::getCenter() const
 {
-	sf::Vector2f center;
-	sf::FloatRect bounds = m_shape->getGlobalBounds();
-
-	// adjust the values (in SFML, 1 rect unit is twice the vector's)
-	bounds.top *= 2;
-	bounds.left *= 2;
-
-	center.x = bounds.left + bounds.width / 2;
-	center.y = bounds.top + bounds.height / 2;
-
-	return center;
+	return ::getCenter(*m_shape); // access global namespace
 }
-
 
 void Piece::move(const float distance)
 {
@@ -61,23 +52,24 @@ void Piece::move(const float distance, const Direction direction)
 
 bool Piece::hasHitTurningPoint(const sf::Vector2f turningPoint) const
 {
-	float errorMargin = 1.f;
+	// might need changing
+	float errorMargin = 2.f;
 
 	if (m_direction.m_up)
 	{
-		return (getCenter().y <= turningPoint.y && abs(getCenter().x - turningPoint.x) <= errorMargin);
+		return (getCenter().y <= turningPoint.y && abs(getCenter().x - turningPoint.x) < errorMargin);
 	}
 	else if (m_direction.m_down)
 	{
-		return (getCenter().y >= turningPoint.y && abs(getCenter().x - turningPoint.x) <= errorMargin);
+		return (getCenter().y >= turningPoint.y && abs(getCenter().x - turningPoint.x) < errorMargin);
 	}
 	else if (m_direction.m_right)
 	{
-		return (getCenter().x >= turningPoint.x && abs(getCenter().y - turningPoint.y) <= errorMargin);
+		return (getCenter().x >= turningPoint.x && abs(getCenter().y - turningPoint.y) < errorMargin);
 	}
 	else if (m_direction.m_left)
 	{
-		return (getCenter().x <= turningPoint.x && abs(getCenter().y - turningPoint.y) <= errorMargin);
+		return (getCenter().x <= turningPoint.x && abs(getCenter().y - turningPoint.y) < errorMargin);
 	}
 	else
 	{

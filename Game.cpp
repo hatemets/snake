@@ -1,10 +1,18 @@
 #include "Game.hpp"
 #include <iostream>
+#include "Helper.hpp"
 
 Game::Game()
 	: m_window(sf::VideoMode(640, 480), "snake"),
-	m_gameOver(false)
+	m_gameOver(false),
+	m_food(m_window),
+	m_scoreBoard(),
+	m_font(),
+	m_score(0)
 {
+	m_font->loadFromFile("SourceCodePro.ttf");
+	m_scoreBoard.setFont(*m_font);
+	m_scoreBoard.setPosition(10.f, 10.f);
 }
 
 void Game::run()
@@ -14,8 +22,6 @@ void Game::run()
 
 	while (m_window.isOpen())
 	{
-		if (m_gameOver) return;
-
 		sf::Time elapsedTime = clock.restart();
 		timeSinceLastUpdate += elapsedTime;
 
@@ -51,20 +57,30 @@ void Game::processEvents()
 
 void Game::update(sf::Time dt)
 {
-	if (m_snake.isDead())
+	if (m_snake.hasHitItself())
 	{
-		std::cout << "game over" << std::endl;
-		m_gameOver = true;
 		return;
 	}
+	else
+	{
+		if (getDistanceBetweenPoints(m_snake.getLeadPiece().getCenter(), m_food.getCenter()) < m_snake.getPieceRadius() + m_food.getRadius())
+		{
+			++m_score;
+			m_snake.addPiece();
+			m_food.setRandomPosition();
+		}
 
-	m_snake.move(dt);
+		m_scoreBoard.setString("Score: " + std::to_string(m_score));
+		m_snake.move(dt);
+	}
 }
 
 void Game::render()
 {
 	m_window.clear();
 	m_window.draw(m_snake);
+	m_window.draw(m_scoreBoard);
+	m_window.draw(m_food);
 	m_window.display();
 }
 

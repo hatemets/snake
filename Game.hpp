@@ -3,6 +3,7 @@
 
 #include <SFML/Graphics.hpp>
 #include "Snake.hpp"
+#include "Food.hpp"
 
 class Game
 {
@@ -20,8 +21,12 @@ class Game
 
 	private:
 		sf::RenderWindow m_window;
+		sf::Text m_scoreBoard;
+		std::unique_ptr<sf::Font> m_font;
 		Snake m_snake;
+		Food m_food;
 		bool m_gameOver;
+		int m_score;
 };
 
 #endif

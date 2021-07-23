@@ -2,22 +2,16 @@
 #include <iostream>
 #include <utility>
 #include <math.h>
-
-bool isComplanary(const Direction& d1, const Direction& d2)
-{
-	return (d1.m_up && d2.m_down
-			|| d1.m_down && d2.m_up
-			|| d1.m_left && d2.m_right
-			|| d1.m_right && d2.m_left);
-}
+#include "Helper.hpp"
+#include "Food.hpp"
 
 Snake::Snake()
 	:
-		m_size(15),
+		m_size(30),
 		m_pieceRadius(10.f),
-		m_spawnPosition(200.f, 200.f),
+		m_spawnPosition(100.f, 300.f),
 		m_direction(),
-		m_movementSpeed(50.f)
+		m_movementSpeed(100.f)
 {
 	m_direction.m_right = true;
 
@@ -52,6 +46,10 @@ void Snake::addPiece(const Direction direction)
 	m_snake.push_back(std::move(piece));
 }
 
+void Snake::addPiece()
+{
+	addPiece(m_snake[m_snake.size() - 1].getDirection());
+}
 
 void Snake::setDirection(const Direction& direction)
 {
@@ -77,29 +75,27 @@ void Snake::setDirection(const Direction& direction)
 		}
 	}
 
-	sf::Clock clock;
-
 	m_snake[0].setDirection(m_direction);
 	m_turningPoints.push_back(std::make_pair(m_snake[0].getCenter(), direction));
-
-	/* adjustLead(clock.restart()); */
 
 	m_direction = direction;
 }
 
 
-bool Snake::isDead() const
+bool Snake::hasHitItself() const
 {
-	for (int i = 0; i < m_snake.size(); ++i)
+	if (m_snake.size() > 3)
 	{
-		if (i > 1 && m_snake[0].getShape()->getGlobalBounds().intersects(m_snake[i].getShape()->getGlobalBounds()))
-		{
-			// needs debugging
-			std::cout << i << std::endl;
-			/* return true; */
-		}
+		int i;
 
-		// check for borders as well
+		for (i = 2; i < m_snake.size(); ++i)
+		{
+			float distance = getDistanceBetweenPoints(m_snake[0].getCenter(), m_snake[i].getCenter());
+			if (distance < 2 * m_pieceRadius)
+			{
+				return true;
+			}
+		}
 	}
 
 	return false;
@@ -116,6 +112,7 @@ void Snake::move(sf::Time dt)
 			{
 				m_snake[i].setDirection(m_turningPoints[j].second);
 
+				// if last piece has passed tpoint, delete tpoint
 				if (i == m_snake.size() - 1)
 				{
 					m_turningPoints.erase(m_turningPoints.begin() + j);
