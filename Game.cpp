@@ -2,7 +2,8 @@
 #include <iostream>
 
 Game::Game()
-	: m_window(sf::VideoMode(640, 480), "snake")
+	: m_window(sf::VideoMode(640, 480), "snake"),
+	m_gameOver(false)
 {
 }
 
@@ -13,6 +14,8 @@ void Game::run()
 
 	while (m_window.isOpen())
 	{
+		if (m_gameOver) return;
+
 		sf::Time elapsedTime = clock.restart();
 		timeSinceLastUpdate += elapsedTime;
 
@@ -51,6 +54,7 @@ void Game::update(sf::Time dt)
 	if (m_snake.isDead())
 	{
 		std::cout << "game over" << std::endl;
+		m_gameOver = true;
 		return;
 	}
 

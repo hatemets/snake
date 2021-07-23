@@ -27,7 +27,6 @@ class Snake : public sf::Drawable
 		void addPiece(const Direction direction);
 		void move(sf::Time dt);
 		void setDirection(const	Direction& direction);
-		void adjustLead(sf::Time dt);
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const final;
 		bool isDead() const;
 };

@@ -17,7 +17,7 @@ Snake::Snake()
 		m_pieceRadius(10.f),
 		m_spawnPosition(200.f, 200.f),
 		m_direction(),
-		m_movementSpeed(30.f),
+		m_movementSpeed(50.f)
 {
 	m_direction.m_right = true;
 
@@ -79,10 +79,10 @@ void Snake::setDirection(const Direction& direction)
 
 	sf::Clock clock;
 
-	m_turningPoints.push_back(std::make_pair(m_snake[0].getCenter(), direction));
 	m_snake[0].setDirection(m_direction);
+	m_turningPoints.push_back(std::make_pair(m_snake[0].getCenter(), direction));
 
-	adjustLead(clock.restart());
+	/* adjustLead(clock.restart()); */
 
 	m_direction = direction;
 }
@@ -92,41 +92,17 @@ bool Snake::isDead() const
 {
 	for (int i = 0; i < m_snake.size(); ++i)
 	{
-		if (i > 0 && m_snake[0].getShape()->getGlobalBounds().intersects(m_snake[i].getShape()->getGlobalBounds()))
+		if (i > 1 && m_snake[0].getShape()->getGlobalBounds().intersects(m_snake[i].getShape()->getGlobalBounds()))
 		{
-			return true;
+			// needs debugging
+			std::cout << i << std::endl;
+			/* return true; */
 		}
 
 		// check for borders as well
 	}
 
 	return false;
-}
-
-
-void Snake::adjustLead(sf::Time dt)
-{
-	Direction direction = m_snake[0].getDirection();
-	Direction opposite;
-
-	if (direction.m_up)
-	{
-		opposite.m_down = true;
-	}
-	else if (direction.m_down)
-	{
-		opposite.m_down = true;
-	}
-	else if (direction.m_left)
-	{
-		opposite.m_right = true;
-	}
-	else if (direction.m_right)
-	{
-		opposite.m_left = true;
-	}
-
-	m_snake[0].move(dt.asSeconds() * m_movementSpeed, opposite);
 }
 
 

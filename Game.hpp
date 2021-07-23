@@ -16,11 +16,12 @@ class Game
 		void render();
 		void handlePlayerInput(sf::Keyboard::Key key);
 
-		sf::Time TimePerFrame = sf::seconds(1.f / 60.f);
+		sf::Time TimePerFrame = sf::seconds(1.f / 400.f);
 
 	private:
 		sf::RenderWindow m_window;
 		Snake m_snake;
+		bool m_gameOver;
 };
 
 #endif
