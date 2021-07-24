@@ -4,12 +4,12 @@
 #include <SFML/Graphics.hpp>
 #include <utility>
 #include <memory>
-#include "Helper.hpp"
 
 class Food : public sf::Drawable
 {
 	public:
 		Food(const sf::RenderWindow& window);
+		Food(Food&& other) noexcept;
 		sf::Vector2f getCenter() const;
 
 	private:

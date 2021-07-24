@@ -7,8 +7,8 @@
 
 Snake::Snake()
 	:
-		m_size(30),
-		m_pieceRadius(10.f),
+		m_size(7),
+		m_pieceRadius(5.f),
 		m_spawnPosition(100.f, 300.f),
 		m_direction(),
 		m_movementSpeed(100.f)
@@ -27,15 +27,12 @@ void Snake::addPiece(const Direction direction)
 
 	if (m_snake.size() >= 1)
 	{
-		sf::CircleShape* shape =  m_snake[m_snake.size() - 1].getShape();
+		position = m_snake[m_snake.size() - 1].getShape()->getPosition();
 
-		position = shape->getPosition();
-		float radius = shape->getRadius();
-
-		if (m_direction.m_up) position.y += radius;
-		else if (m_direction.m_down) position.y -= radius;
-		else if (m_direction.m_left) position.x += radius;
-		else if (m_direction.m_right) position.x -= radius;
+		if (direction.m_up) position.y += m_pieceRadius;
+		else if (direction.m_down) position.y -= m_pieceRadius;
+		else if (direction.m_left) position.x += m_pieceRadius;
+		else if (direction.m_right) position.x -= m_pieceRadius;
 	}
 	else
 	{
@@ -49,6 +46,17 @@ void Snake::addPiece(const Direction direction)
 void Snake::addPiece()
 {
 	addPiece(m_snake[m_snake.size() - 1].getDirection());
+}
+
+
+const Piece& Snake::getPiece(int index) const
+{
+	if (index >= m_snake.size())
+	{
+		throw "invalid index for snake";
+	}
+
+	return m_snake[index];
 }
 
 void Snake::setDirection(const Direction& direction)
@@ -81,7 +89,6 @@ void Snake::setDirection(const Direction& direction)
 	m_direction = direction;
 }
 
-
 bool Snake::hasHitItself() const
 {
 	if (m_snake.size() > 3)
@@ -100,7 +107,6 @@ bool Snake::hasHitItself() const
 
 	return false;
 }
-
 
 void Snake::move(sf::Time dt)
 {

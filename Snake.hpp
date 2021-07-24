@@ -32,8 +32,10 @@ class Snake : public sf::Drawable
 		bool hasHitItself() const;
 
 	public:
-		const Piece& getLeadPiece() const { return m_snake[0]; }
+		const Piece& getPiece(int index=0) const;
 		float getPieceRadius() const { return m_pieceRadius; }
+		float getVelocity() const { return m_movementSpeed; }
+		void setVelocity(float speed) { m_movementSpeed = speed; }
 };
 
 #endif

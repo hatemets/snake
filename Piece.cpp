@@ -21,7 +21,17 @@ Piece::Piece(Piece&& anotherPiece) noexcept
 
 sf::Vector2f Piece::getCenter() const
 {
-	return ::getCenter(*m_shape); // access global namespace
+	sf::Vector2f center;
+	sf::FloatRect bounds = m_shape->getGlobalBounds();
+
+	// adjust the values (in SFML, 1 rect unit is twice the vector's)
+	bounds.top *= 2;
+	bounds.left *= 2;
+
+	center.x = bounds.left + bounds.width / 2;
+	center.y = bounds.top + bounds.height / 2;
+
+	return center;
 }
 
 void Piece::move(const float distance)

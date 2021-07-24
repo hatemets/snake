@@ -10,20 +10,5 @@ bool isComplanary(const Direction& d1, const Direction& d2)
 
 float getDistanceBetweenPoints(const sf::Vector2f a, const sf::Vector2f b)
 {
-	return (sqrt(pow(abs(a.x - b.x), 2) + pow(abs(a.y - b.y), 2)));
-}
-
-const sf::Vector2f getCenter(const sf::CircleShape& shape)
-{
-	sf::Vector2f center;
-	sf::FloatRect bounds = shape.getGlobalBounds();
-
-	// adjust the values (in SFML, 1 rect unit is twice the vector's)
-	bounds.top *= 2;
-	bounds.left *= 2;
-
-	center.x = bounds.left + bounds.width / 2;
-	center.y = bounds.top + bounds.height / 2;
-
-	return center;
+	return sqrt(pow(a.x - b.x, 2) + pow(a.y - b.y, 2));
 }

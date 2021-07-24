@@ -1,6 +1,6 @@
 #include "Game.hpp"
-#include <iostream>
 #include "Helper.hpp"
+#include <iostream>
 
 Game::Game()
 	: m_window(sf::VideoMode(640, 480), "snake"),
@@ -8,9 +8,15 @@ Game::Game()
 	m_food(m_window),
 	m_scoreBoard(),
 	m_font(),
+	m_snake(),
 	m_score(0)
 {
-	m_font->loadFromFile("SourceCodePro.ttf");
+	m_font = std::make_unique<sf::Font>();
+	if (!m_font->loadFromFile("SourceCodePro.ttf"))
+	{
+		throw "font not found";
+	}
+
 	m_scoreBoard.setFont(*m_font);
 	m_scoreBoard.setPosition(10.f, 10.f);
 }
@@ -63,15 +69,15 @@ void Game::update(sf::Time dt)
 	}
 	else
 	{
-		if (getDistanceBetweenPoints(m_snake.getLeadPiece().getCenter(), m_food.getCenter()) < m_snake.getPieceRadius() + m_food.getRadius())
-		{
-			++m_score;
-			m_snake.addPiece();
-			m_food.setRandomPosition();
-		}
-
 		m_scoreBoard.setString("Score: " + std::to_string(m_score));
 		m_snake.move(dt);
+
+		if (getDistanceBetweenPoints(m_snake.getPiece().getCenter(), m_food.getCenter()) < m_snake.getPieceRadius() + m_food.getRadius())
+		{
+			m_snake.addPiece();
+			++m_score;
+			m_food.setRandomPosition();
+		}
 	}
 }
 
@@ -79,8 +85,8 @@ void Game::render()
 {
 	m_window.clear();
 	m_window.draw(m_snake);
-	m_window.draw(m_scoreBoard);
 	m_window.draw(m_food);
+	m_window.draw(m_scoreBoard);
 	m_window.display();
 }
 

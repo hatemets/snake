@@ -7,6 +7,5 @@
 
 bool isComplanary(const Direction& d1, const Direction& d2);
 float getDistanceBetweenPoints(const sf::Vector2f a, const sf::Vector2f b);
-const sf::Vector2f getCenter(const sf::CircleShape& shape);
 
 #endif
