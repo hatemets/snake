@@ -5,13 +5,14 @@
 #include "Helper.hpp"
 #include "Food.hpp"
 
-Snake::Snake()
+Snake::Snake(const sf::RenderWindow& window)
 	:
 		m_size(7),
 		m_pieceRadius(5.f),
 		m_spawnPosition(100.f, 300.f),
 		m_direction(),
-		m_movementSpeed(100.f)
+		m_movementSpeed(100.f),
+		m_worldBounds(0.f, 0.f, window.getSize().x, window.getSize().y)
 {
 	m_direction.m_right = true;
 
@@ -103,6 +104,18 @@ bool Snake::hasHitItself() const
 				return true;
 			}
 		}
+	}
+
+	return false;
+}
+
+bool Snake::hasHitBorder() const
+{
+	auto center = m_snake[0].getCenter();
+
+	if (!m_worldBounds.contains({center.x, center.y}))
+	{
+		return true;
 	}
 
 	return false;

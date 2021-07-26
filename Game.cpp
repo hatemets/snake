@@ -8,7 +8,7 @@ Game::Game()
 	m_food(m_window),
 	m_scoreBoard(),
 	m_font(),
-	m_snake(),
+	m_snake(m_window),
 	m_score(0)
 {
 	m_font = std::make_unique<sf::Font>();
@@ -63,13 +63,12 @@ void Game::processEvents()
 
 void Game::update(sf::Time dt)
 {
-	if (m_snake.hasHitItself())
+	if (m_snake.isDead())
 	{
 		return;
 	}
 	else
 	{
-		m_scoreBoard.setString("Score: " + std::to_string(m_score));
 		m_snake.move(dt);
 
 		if (getDistanceBetweenPoints(m_snake.getPiece().getCenter(), m_food.getCenter()) < m_snake.getPieceRadius() + m_food.getRadius())
@@ -79,6 +78,8 @@ void Game::update(sf::Time dt)
 			m_food.setRandomPosition();
 		}
 	}
+
+	m_scoreBoard.setString("Score: " + std::to_string(m_score));
 }
 
 void Game::render()

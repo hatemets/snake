@@ -19,17 +19,20 @@ class Snake : public sf::Drawable
 		float m_pieceRadius;
 		sf::Vector2f m_spawnPosition;
 		std::vector<std::pair<sf::Vector2f, Direction>> m_turningPoints;
+		sf::FloatRect m_worldBounds;
 
 		Direction m_direction;
 
 	public:
-		Snake();
+		Snake(const sf::RenderWindow& window);
 		void addPiece(const Direction direction);
 		void addPiece();
 		void move(sf::Time dt);
 		void setDirection(const	Direction& direction);
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const final;
 		bool hasHitItself() const;
+		bool hasHitBorder() const;
+		bool isDead() const { return (hasHitItself() || hasHitBorder()); }
 
 	public:
 		const Piece& getPiece(int index=0) const;
